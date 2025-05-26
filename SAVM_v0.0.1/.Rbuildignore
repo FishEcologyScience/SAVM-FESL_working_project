@@ -1,0 +1,14 @@
+^LICENSE$
+^README.Rmd$
+^README_files/
+^\.github/workflows/R-CMD-check\.yaml$
+^.github/
+^\.lintr$
+^fetchR$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^tmp$
+^notes\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
