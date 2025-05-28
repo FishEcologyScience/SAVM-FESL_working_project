@@ -57,11 +57,11 @@ LH_shapefile_m <- st_transform(LH_shapefile, crs = 32617)
 LO_shapefile_m <- st_transform(LO_shapefile, crs = 32617) 
 
 #Turn points into spatial object and reproject
-LH_data <- LH_data_raw %>% 
+LH_data_m <- LH_data_raw %>% 
   st_as_sf(., coords = c("POINT_X", "POINT_Y"), crs = 4326) %>% #Make spatial
   st_transform(., crs = 32617) #Tranform to measure dist in meters
 
-LO_data <- LO_data_raw %>% 
+LO_data_m <- LO_data_raw %>% 
   st_as_sf(., coords = c("POINT_X", "POINT_Y"), crs = 4326) %>% #Make spatial
   st_transform(., crs = 32617) #Tranform to measure dist in meters
 
@@ -83,17 +83,54 @@ LO_data <- LO_data_raw %>%
 ### Calculate fetch
 #----------------------------#
 #Run fetch function 
-LH_fetch_raw <- compute_fetch(points=LH_data_m, polygon=LH_shapefile_m)
-LO_fetch_raw <- compute_fetch(points=LO_data_m, polygon=LO_shapefile_m)
+#LH_fetch_raw <- compute_fetch(points=LH_data_m, polygon=LH_shapefile_m)
+#LO_fetch_raw <- compute_fetch(points=LO_data_m, polygon=LO_shapefile_m)
+LH_fetch_raw2 <- compute_fetch(points=LH_data_m, polygon=LH_shapefile_m, n_quad_seg = 4)
+LO_fetch_raw2 <- compute_fetch(points=LO_data_m, polygon=LO_shapefile_m, n_quad_seg = 4)
 
+
+
+# ### Format outputs
+# #----------------------------#
+# #Reappend new fetch data with dataset
+# LH_fetch <- cbind(as.data.frame(left_join(LH_data_raw, LH_data)), as.data.frame(LH_fetch_raw[["mean_fetch"]]))
+# LO_fetch <- cbind(as.data.frame(left_join(LO_data_raw, LO_data)), as.data.frame(LO_fetch_raw[["mean_fetch"]]))
+# 
+# #Check that data is reasonable
+# with(LH_fetch, plot(fetch_km ~ Depth))
+# with(LO_fetch, plot(fetch_km ~ Depth))
+# 
+# #Print data
+# write.csv(LH_fetch, "03 - Outputs/LH_fetch.csv")
+# write.csv(LO_fetch, "03 - Outputs/LO_fetch.csv")
+
+
+
+### Format outputs
+#----------------------------#
 #Reappend new fetch data with dataset
-LH_fetch <- cbind(as.data.frame(LH_data), as.data.frame(LH_fetch_raw[["mean_fetch"]]))
-LO_fetch <- cbind(as.data.frame(LO_data), as.data.frame(LO_fetch_raw[["mean_fetch"]]))
+LH_fetch2 <- cbind(as.data.frame(left_join(LH_data_raw, LH_data)), as.data.frame(LH_fetch_raw2[["mean_fetch"]]))
+LO_fetch2 <- cbind(as.data.frame(left_join(LO_data_raw, LO_data)), as.data.frame(LO_fetch_raw2[["mean_fetch"]]))
 
 #Check that data is reasonable
-with(LH_fetch, plot(fetch_km ~ Depth))
-with(LO_fetch, plot(fetch_km ~ Depth))
+with(LH_fetch2, plot(fetch_km ~ Depth))
+with(LO_fetch2, plot(fetch_km ~ Depth))
 
 #Print data
-write.csv(LH_fetch, "03 - Outputs/LH_fetch.csv")
-write.csv(LH_fetch, "03 - Outputs/LH_fetch.csv")
+write.csv(LH_fetch2, "03 - Outputs/LH_fetch2.csv")
+write.csv(LO_fetch2, "03 - Outputs/LO_fetch2.csv")
+
+
+#Grab transect lines for Jon
+#----------------------------#
+LO_transects <- LO_fetch_raw2[["transect_lines"]] %>% 
+  filter(rank > 12)
+LO_transects %>% 
+  group_by(id_point) %>% 
+  summarize(fetch_4pts = mean(transect_length))
+
+LH_transects <- LH_fetch_raw2[["transect_lines"]] %>% 
+  filter(rank > 12)
+LH_transects %>% 
+  group_by(id_point) %>% 
+  summarize(fetch_4pts = mean(transect_length))
