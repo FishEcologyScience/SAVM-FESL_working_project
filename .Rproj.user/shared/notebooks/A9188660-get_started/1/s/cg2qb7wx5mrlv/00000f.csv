@@ -1,0 +1,10 @@
+"0","# Lake Erie study zone: read
+study_zone <- system.file(""example"", ""study_zone.geojson"", package = ""SAVM"") |>
+  read_sav(spacing = 2000)
+"
+"2","[36mℹ[39m Determining file type and processing: C:/Users/Administrator/Desktop/R Working Directory/GitHub Desktop/SAVM/SAVM_v0.0.1/inst/example/study_zone.geojson
+"
+"2","[36mℹ[39m Transforming spatial data.
+"
+"2","[32m✔[39m Grid of 46 points successfully generated from AOI.
+"
