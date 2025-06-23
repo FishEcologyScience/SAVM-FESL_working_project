@@ -134,8 +134,8 @@ with(LO_fetch, plot(fetch_max4pts ~ Depth))
 
 #Print data
 #----------------------------#
-write.csv(LH_fetch, "03 - Outputs/LH_fetch_2025-06-09.csv")
-write.csv(LO_fetch, "03 - Outputs/LO_fetch_2025-06-09.csv")
+write.csv(as.data.frame(LH_fetch), "03 - Outputs/LH_fetch_2025-06-09.csv")
+write.csv(as.data.frame(LO_fetch), "03 - Outputs/LO_fetch_2025-06-09.csv")
 
 write.csv(as.data.frame(LH_fetch_raw[["transect_lines"]]), "03 - Outputs/LH_fetch_transect_lines_2025-06-09.csv")
 write.csv(as.data.frame(LO_fetch_raw[["transect_lines"]]), "03 - Outputs/LO_fetch_transect_lines_2025-06-09.csv")
