@@ -1,0 +1,39 @@
+"0","# Lake Erie boundaries polygon (reading from SAVM internal files)
+le_bound <- system.file(""example"", ""lake_erie.gpkg"", package = ""SAVM"") |>
+  sf::st_read() |>
+  sf::st_transform(crs = 3857)
+"
+"1","Reading layer `"
+"1","lake_erie"
+"1","' from data source "
+"1","
+"
+"1","  "
+"1","`"
+"1","C:\Users\Administrator\Desktop\R Working Directory\GitHub Desktop\SAVM\04 - Package\SAVM\inst\example\lake_erie.gpkg"
+"1","' "
+"1","
+"
+"1","  "
+"1","using driver `"
+"1","GPKG"
+"1","'"
+"1","
+"
+"1","Simple feature collection with 1 feature and 1 field"
+"1","
+"
+"1","Geometry type: MULTIPOLYGON
+"
+"1","Dimension:     XYZ
+"
+"1","Bounding box:  "
+"1","xmin: -83.47975 ymin: 41.38081 xmax: -78.85269 ymax: 42.94512"
+"1","
+"
+"1","z_range:       "
+"1","zmin: 0 zmax: 0"
+"1","
+"
+"1","Geodetic CRS:  WGS 84
+"

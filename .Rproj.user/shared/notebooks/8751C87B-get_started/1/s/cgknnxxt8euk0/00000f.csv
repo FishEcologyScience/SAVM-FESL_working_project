@@ -1,0 +1,9 @@
+"0","erie_lake  <- erie_land |>"
+"0","  invert_polygon()"
+"2","although coordinates are longitude/latitude, st_difference assumes that they are planar
+"
+"2","Warning: attribute variables are assumed to be spatially constant throughout all geometries"
+"0","  "
+"0","erie_lake |>"
+"0","  st_geometry() |>"
+"0","  plot(col = 1)"

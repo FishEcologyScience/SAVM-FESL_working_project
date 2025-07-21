@@ -88,8 +88,8 @@ LO_data_m <- LO_data_raw %>%
 ### Calculate fetch
 #----------------------------#
 #Run fetch function 
-LH_fetch_raw <- compute_fetch(points=LH_data_m, polygon=LH_shapefile_m, n_quad_seg = 4) #Specify that we want 16 bearings
-LO_fetch_raw <- compute_fetch(points=LO_data_m, polygon=LO_shapefile_m, n_quad_seg = 4) #Specify that we want 16 bearings
+LH_fetch_raw <- compute_fetch(points=LH_data_m, polygon=LH_shapefile_m) #Specify that we want 16 bearings
+LO_fetch_raw <- compute_fetch(points=LO_data_m, polygon=LO_shapefile_m) #Specify that we want 16 bearings
 
     #Default computes 36 bearings (n_quad_seg = 9)
     #LH_fetch_raw <- compute_fetch(points=LH_data_m, polygon=LH_shapefile_m)

@@ -1,0 +1,11 @@
+"0","fetch <- compute_fetch(study_zone$points, le_bound)"
+"2","[36mℹ[39m `points` and `polygon` have different CRS, transforming
+`points` to match `polygon` CRS.
+"
+"2","[36mℹ[39m Creating fetch lines
+"
+"2","[36mℹ[39m Cropping fetch lines
+"
+"0","fetch"
+"1","$mean_fetch
+"

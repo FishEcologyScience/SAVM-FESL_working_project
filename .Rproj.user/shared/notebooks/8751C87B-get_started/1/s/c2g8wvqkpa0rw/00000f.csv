@@ -1,0 +1,2 @@
+"0","# Depth (reading with stars)"
+"0","study_depth <- stars::read_stars(system.file(""example"", ""le_bathy.tiff"", package = ""SAVM""))"
