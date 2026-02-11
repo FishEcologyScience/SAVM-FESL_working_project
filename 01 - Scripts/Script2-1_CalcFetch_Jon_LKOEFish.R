@@ -22,6 +22,7 @@
 #----------------------------#
 #Shapefiles
 #Shapefiles with water as polygon
+setwd("C:/Users/midwoodj/Documents/github/SAVM_working-FESL-version/")
 LO_shapefile <- st_read("02 - Data/LakeONtario/LkOntario.shp")
 
     #Shapefiles where polygon is land do not work
@@ -30,24 +31,16 @@ LO_shapefile <- st_read("02 - Data/LakeONtario/LkOntario.shp")
 
 
 #Points to append fetch to
-LH_data_raw <- read.csv("02 - Data/SAV_2024 Samples - Fetch Ready/SAV_2024_LakeHuronPoints_20May2025.csv")
-LO_data_raw <- read.csv("02 - Data/SAV_2024 Samples - Fetch Ready/SAV_2024_LakeOntarioPoints_20May2025.csv")
+LO_data_raw <- read.csv("02 - Data/LKO_Efishing_MeanFetch_SAVModelled_Re_run_06Feb206.csv")
+#LO_data_raw <- read.csv("02 - Data/LKO_NearshorePoint_100m_AllHabitat_24Apr2024_ForSAVM.csv")
 
 
     ### Plot Raw Data
     ggplot()+
-      #Check that water is the polygon
-      geom_sf(data=LH_shapefile, colour = "black", inherit.aes = FALSE, fill="lightblue")+
-      geom_point(data = LH_data_raw,
-                 aes(x=POINT_X, y=POINT_Y), colour="firebrick", alpha=0.5)+
-      ylab("Latitude")+xlab("Longitude")+
-      theme_classic()
-    
-    ggplot()+
       geom_sf(data=LO_shapefile, colour = "black", fill="lightblue", inherit.aes = FALSE)+
       geom_point(data = LO_data_raw,
-                 aes(x=POINT_X, y=POINT_Y), colour="firebrick", alpha=0.5)+
-      ylab("Latitude")+xlab("Longitude")+
+                 aes(x=Latitude, y=Longitude), colour="firebrick", alpha=0.5)+
+      ylab("Longitude")+xlab("Latitude")+
       theme_classic()
 
     
@@ -55,40 +48,28 @@ LO_data_raw <- read.csv("02 - Data/SAV_2024 Samples - Fetch Ready/SAV_2024_LakeO
 ### Reproject data
 #----------------------------#
 #Reproject shapefile to use meters
-LH_shapefile_m <- st_transform(LH_shapefile, crs = 32617) 
 LO_shapefile_m <- st_transform(LO_shapefile, crs = 32617) 
  
 
 #Turn points into spatial object and reproject
-LH_data_m <- LH_data_raw %>% 
-  st_as_sf(., coords = c("POINT_X", "POINT_Y"), crs = 4326) %>% #Make spatial
-  st_transform(., crs = 32617) #Tranform to measure dist in meters
-
 LO_data_m <- LO_data_raw %>% 
-  st_as_sf(., coords = c("POINT_X", "POINT_Y"), crs = 4326) %>% #Make spatial
+  st_as_sf(., coords = c("easting", "northing"), crs = 32617) %>% #Make spatial
   st_transform(., crs = 32617) #Tranform to measure dist in meters
 
 
     ### Plot Transformed Data
-    ggplot()+
-      geom_sf(data=LH_shapefile_m, colour = "black", fill=NA, inherit.aes = FALSE)+
-      geom_sf(data=LH_data_m, colour = "blue", fill=NA, inherit.aes = FALSE)+
-      ylab("Northing")+xlab("Easting")+
-      theme_classic()
-    
     ggplot()+
       geom_sf(data=LO_shapefile_m, colour = "black", fill=NA, inherit.aes = FALSE)+
       geom_sf(data=LO_data_m, colour = "blue", fill=NA, inherit.aes = FALSE)+
       ylab("Northing")+xlab("Easting")+
       theme_classic()
 
-    
+   
     
 ### Calculate fetch
 #----------------------------#
 #Run fetch function 
-LH_fetch_raw <- compute_fetch(points=LH_data_m, polygon=LH_shapefile_m) #Specify that we want 16 bearings
-LO_fetch_raw <- compute_fetch(points=LO_data_m, polygon=LO_shapefile_m) #Specify that we want 16 bearings
+LO_fetch_raw <- compute_fetch(points=LO_data_m, polygon=LO_shapefile_m,max_dist = 15, n_bearings = 16,remove_outsiders = TRUE) #Specify that we want 16 bearings
 
     #Default computes 36 bearings (n_quad_seg = 9)
     #LH_fetch_raw <- compute_fetch(points=LH_data_m, polygon=LH_shapefile_m)
@@ -97,47 +78,41 @@ LO_fetch_raw <- compute_fetch(points=LO_data_m, polygon=LO_shapefile_m) #Specify
 
 ### Format outputs
 #Re-append new fetch data with existing dataset
-LH_fetch <- cbind(as.data.frame(left_join(LH_data_m, LH_data_raw)), as.data.frame(LH_fetch_raw[["mean_fetch"]]))
 LO_fetch <- cbind(as.data.frame(left_join(LO_data_m, LO_data_raw)), as.data.frame(LO_fetch_raw[["mean_fetch"]]))
 
  
-
-#Fix Transect Lines as Per Jons instructions
-#----------------------------#
-#Grab four greatest bearing distances
-LH_fetch_max4pts <- LH_fetch_raw[["transect_lines"]] %>%
-  slice_max(order_by = rank, n = 4, with_ties = FALSE)
-#Average slected fetch bearings
-LH_fetch_max4pts <- LH_fetch_max4pts %>% 
-  group_by(id_point) %>% 
-  summarize(fetch_max4pts = mean(transect_length))
-#Append dataset
-LH_fetch <- LH_fetch %>% cbind(LH_fetch_max4pts)
-
-
-#Grab four greatest bearing distances
-LO_fetch_max4pts <- LO_fetch_raw[["transect_lines"]] %>%
-  slice_max(order_by = rank, n = 4, with_ties = FALSE)
-#Average slected fetch bearings
-LO_fetch_max4pts <- LO_fetch_max4pts %>% 
-  group_by(id_point) %>% 
-  summarize(fetch_max4pts = mean(transect_length))
-#Append dataset
-LO_fetch <- LO_fetch %>% cbind(LO_fetch_max4pts)
-
-#Check that data is reasonable
-with(LH_fetch, plot(fetch_max4pts ~ Depth))
-with(LO_fetch, plot(fetch_max4pts ~ Depth))
-
- 
+## issue - not calculating all 16 bearings for every point - some only have 6... why?
 
 #Print data
 #----------------------------#
-write.csv(as.data.frame(LH_fetch), "03 - Outputs/LH_fetch_2025-06-09.csv")
-write.csv(as.data.frame(LO_fetch), "03 - Outputs/LO_fetch_2025-06-09.csv")
+write.csv(as.data.frame(LO_fetch), "03 - Outputs/LO_fetch_efishing_2026-02-10.csv")
 
-write.csv(as.data.frame(LH_fetch_raw[["transect_lines"]]), "03 - Outputs/LH_fetch_transect_lines_2025-06-09.csv")
-write.csv(as.data.frame(LO_fetch_raw[["transect_lines"]]), "03 - Outputs/LO_fetch_transect_lines_2025-06-09.csv")
+write.csv(as.data.frame(LO_fetch_raw[["transect_lines"]]), "03 - Outputs/LO_fetch_transect_lines_efishing_2026-02-10.csv")
 
 
+## data check
+## where are "no data" spots (i.e., outside of lake boundaries.)
+nodata<-LO_fetch[is.na(LO_fetch$fetch_km),]
+LO_fetch_m <- LO_fetch %>% 
+  st_as_sf(., coords = c("easting", "northing"), crs = 32617) %>% #Make spatial
+  st_transform(., crs = 32617) #Tranform to measure dist in meters
+nodata_m <- nodata %>% 
+  st_as_sf(., coords = c("easting", "northing"), crs = 32617) %>% #Make spatial
+  st_transform(., crs = 32617) #Tranform to measure dist in meters
 
+ggplot()+
+  geom_sf(data=LO_shapefile_m, colour = "black", fill=NA, inherit.aes = FALSE)+
+  geom_sf(data=LO_data_m, colour = "blue", fill=NA, inherit.aes = FALSE)+
+  geom_sf(data=nodata_m, colour = "red", fill=NA, inherit.aes = FALSE)+
+  ylab("Northing")+xlab("Easting")+
+  theme_classic()
+
+## do data align with past calculations?
+plot(fetch_km~fetch.mean.old,data=LO_fetch) ## no!
+
+ggplot()+
+  geom_sf(data=LO_shapefile_m, colour = "black", fill=NA, inherit.aes = FALSE)+
+  geom_sf(data=LO_fetch_m, , aes(fill=LO_fetch_m$fetch_km), inherit.aes = FALSE)+
+  scale_fill_viridis_c(low = "yellow", high = "red")+
+  ylab("Northing")+xlab("Easting")+
+  theme_classic()
