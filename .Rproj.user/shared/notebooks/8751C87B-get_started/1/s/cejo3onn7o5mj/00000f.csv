@@ -1,3 +1,0 @@
-"0","study_zone$points <- cbind(study_zone$points, res)"
-"0","plot_sav_tmap(study_zone)"
-"0","plot_sav_tmap(study_zone, layers = ""cover"", interactive = FALSE)"

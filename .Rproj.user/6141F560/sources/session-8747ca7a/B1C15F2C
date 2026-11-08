@@ -1,0 +1,26 @@
+{
+    "id": "B1C15F2C",
+    "path": "~/github/SAVM_working-FESL-version/01 - Scripts/Script0-1_PackageHandler.R",
+    "project_path": "01 - Scripts/Script0-1_PackageHandler.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1793996713454.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "34,0",
+        "scrollLine": "8"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1748629128,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1748629128,
+    "read_only": false,
+    "read_only_alternatives": []
+}

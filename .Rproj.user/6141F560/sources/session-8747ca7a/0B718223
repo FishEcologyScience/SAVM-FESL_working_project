@@ -1,0 +1,26 @@
+{
+    "id": "0B718223",
+    "path": "~/github/SAVM_working-FESL-version/01 - Scripts/Script0-2_SAVM_setup.R",
+    "project_path": "01 - Scripts/Script0-2_SAVM_setup.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": true,
+    "created": 1793996720398.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "54,0",
+        "scrollLine": "29"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1753197801,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1793996968288,
+    "read_only": false,
+    "read_only_alternatives": []
+}
